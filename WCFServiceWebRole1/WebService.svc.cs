@@ -14,11 +14,13 @@ namespace WCFServiceWebRole1
     // NOTE: In order to launch WCF Test Client for testing this service, please select WebService.svc or WebService.svc.cs at the Solution Explorer and start debugging.
     public class WebService : IWebService
     {
+        private static Dictionary<int, bool> stateDictionary = new Dictionary<int, bool>();
         public DbC DbC { get; set; } = new DbC();
 
 
         public void InsertData(string id, string value)
         {
+
             int toiletId;
             int light;
             if (int.TryParse(id, out toiletId) && int.TryParse(value, out light))
@@ -30,8 +32,12 @@ namespace WCFServiceWebRole1
                     State = light < 230,
                     ToiletId = toiletId
                 };
-                DbC.Status.Add(status);
-                DbC.SaveChanges();
+                if (!stateDictionary.ContainsKey(toiletId) || stateDictionary[toiletId] != status.State)
+                {
+                    DbC.Status.Add(status);
+                    DbC.SaveChanges();
+                    stateDictionary[toiletId] = status.State;
+                }
             }
         }
 
