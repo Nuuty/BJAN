@@ -38,23 +38,16 @@ namespace WCFServiceWebRole1
         public bool GetStateById(string id)
         {
             int toiletId;
+            if (!int.TryParse(id, out toiletId))
+            {
+                throw new WebFaultException<string>("", HttpStatusCode.NotFound);
+            }
             try
             {
-                if (int.TryParse(id, out toiletId))
-                {
-                    var result = DbC.Status.Where(status => status.ToiletId == toiletId);
-                    List<Status> list = new List<Status>();
-
-                    foreach (var status in result)
-                    {
-                        list.Add(status);
-                    }
-                    return list.Last().State;
-                }
-                else
-                {
-                    throw new Exception();
-                }
+                return DbC.Status.OrderByDescending(status => status.Id)
+                            .Where(x => x.ToiletId == toiletId)
+                            .Select(status => status.State)
+                            .First();
             }
             catch (Exception)
             {

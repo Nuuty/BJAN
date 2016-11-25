@@ -20,5 +20,4 @@ namespace WCFServiceWebRole1
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/currentstate/{id}")]
         bool GetStateById(string id);
     }
-    
 }
