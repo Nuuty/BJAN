@@ -16,18 +16,6 @@ namespace WCFServiceWebRole1
     {
         public DbC DbC { get; set; } = new DbC();
 
-        public CompositeType GetDataUsingDataContract(CompositeType composite)
-        {
-            if (composite == null)
-            {
-                throw new ArgumentNullException("composite");
-            }
-            if (composite.BoolValue)
-            {
-                composite.StringValue += "Suffix";
-            }
-            return composite;
-        }
 
         public void InsertData(string id, string value)
         {
@@ -56,12 +44,12 @@ namespace WCFServiceWebRole1
                 {
                     var result = DbC.Status.Where(status => status.ToiletId == toiletId);
                     List<Status> list = new List<Status>();
-                    
-                        foreach (var status in result)
-                        {
-                            list.Add(status);
-                        }
-                        return list.Last().State;               
+
+                    foreach (var status in result)
+                    {
+                        list.Add(status);
+                    }
+                    return list.Last().State;
                 }
                 else
                 {
@@ -69,9 +57,9 @@ namespace WCFServiceWebRole1
                 }
             }
             catch (Exception)
-                    {
-                        throw new WebFaultException<string>("",HttpStatusCode.NotFound);               
-                    }
-                }
+            {
+                throw new WebFaultException<string>("", HttpStatusCode.NotFound);
             }
         }
+    }
+}
