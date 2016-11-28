@@ -62,22 +62,29 @@ namespace WCFServiceWebRole1
             }
         }
 
-        public List<bool> GetStateForAll()
+        public List<ReturnItem> GetStateForAll()
         {
             SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["connectionstring"].ConnectionString);
             conn.Open();
             SqlCommand cmd = new SqlCommand(@"
-            SELECT Status FROM Status JOIN(
+            SELECT b.Toiletid, Status FROM Status JOIN(
             SELECT Toiletid, Max(Id) as a FROM Status GROUP BY ToiletId) as b
             on Status.Id = b.a
-            ",conn);
+            ", conn);
             SqlDataReader reader = cmd.ExecuteReader();
-            List<bool> states = new List<bool>();
+            List<ReturnItem> states = new List<ReturnItem>();
             while (reader.Read())
             {
-               states.Add(reader.GetBoolean(0));
+                ReturnItem returnItem = new ReturnItem
+                {
+                    id = reader.GetInt32(0),
+                    state = reader.GetBoolean(1)
+                };
+               states.Add(returnItem);
             }
             return states;
         }
     }
+
+    
 }

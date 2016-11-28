@@ -23,6 +23,6 @@ namespace WCFServiceWebRole1
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/currentstate")]
-        List<bool> GetStateForAll();
+        List<ReturnItem> GetStateForAll();
     }
 }
