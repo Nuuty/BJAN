@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
@@ -59,6 +60,24 @@ namespace WCFServiceWebRole1
             {
                 throw new WebFaultException<string>("", HttpStatusCode.NotFound);
             }
+        }
+
+        public List<bool> GetStateForAll()
+        {
+            SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["connectionstring"].ConnectionString);
+            conn.Open();
+            SqlCommand cmd = new SqlCommand(@"
+            SELECT Status FROM Status JOIN(
+            SELECT Toiletid, Max(Id) as a FROM Status GROUP BY ToiletId) as b
+            on Status.Id = b.a
+            ",conn);
+            SqlDataReader reader = cmd.ExecuteReader();
+            List<bool> states = new List<bool>();
+            while (reader.Read())
+            {
+               states.Add(reader.GetBoolean(0));
+            }
+            return states;
         }
     }
 }
