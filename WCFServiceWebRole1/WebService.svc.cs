@@ -113,8 +113,8 @@ from (
                 }
                 returnData[reader.GetInt32(1)].Add(new StatisicValues()
                 {
-                    date = reader.GetDateTime(2),
-                    value = reader.GetInt32(1)
+                    date = reader.GetDateTime(2).ToString("d"),
+                    value = reader.GetInt32(0)
                 });
             }
 
@@ -128,7 +128,7 @@ from (
 
     public class StatisicValues
     {
-        public DateTime date;
+        public string date;
         public int value;
     }
 }
