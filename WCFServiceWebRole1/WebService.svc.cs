@@ -84,7 +84,51 @@ namespace WCFServiceWebRole1
             }
             return states;
         }
+
+        public Dictionary<int, List<StatisicValues>> Statistic()
+        {
+            String sql = @"
+select count(stat.LightOn) as antal, TId, stat.InsertDate
+from (
+	select Status as LightOn, ToiletId as TId, CAST(InsertedDatetime  AS DATE) as InsertDate 
+	from Status
+	where Status = 1
+	) as stat
+	group by stat.TId, stat.InsertDate
+";
+
+            SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["connectionstring"].ConnectionString);
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand(sql);
+            SqlDataReader reader = cmd.ExecuteReader();
+            Dictionary<int, List<StatisicValues>> returnData = new Dictionary<int, List<StatisicValues>>();
+
+
+            while (reader.Read())
+            {
+                if (!returnData.ContainsKey(reader.GetInt32(1)))
+                {
+                    returnData.Add(reader.GetInt32(1), new List<StatisicValues>());
+                }
+                returnData[reader.GetInt32(1)].Add(new StatisicValues()
+                {
+                    date = reader.GetDateTime(2),
+                    value = reader.GetInt32(1)
+                });
+            }
+
+
+
+            return returnData;
+
+
+        }
     }
 
-    
+    public class StatisicValues
+    {
+        public DateTime date;
+        public int value;
+    }
 }
