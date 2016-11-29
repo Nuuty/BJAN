@@ -100,7 +100,7 @@ from (
             SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["connectionstring"].ConnectionString);
             conn.Open();
 
-            SqlCommand cmd = new SqlCommand(sql);
+            SqlCommand cmd = new SqlCommand(sql, conn);
             SqlDataReader reader = cmd.ExecuteReader();
             Dictionary<int, List<StatisicValues>> returnData = new Dictionary<int, List<StatisicValues>>();
 
